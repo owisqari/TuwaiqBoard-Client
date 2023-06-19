@@ -9,6 +9,7 @@ function Login() {
     console.log(data)
   }
   return (
+    //login page 
     <>
       <section className="h-full grid grid-cols-6 gap-4">
         <section className="lg:col-span-4 col-span-6 m-4 justify-center">
