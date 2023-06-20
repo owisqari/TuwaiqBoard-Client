@@ -1,23 +1,22 @@
 import { useState } from "react";
 // import { FaBeer } from 'react-icons/fa';
 // import app.
-const sidebar = () => {
+const SideNav = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [open, setOpen] = useState(true);
   const Menus = [
-    { title: "لوحة القيادة", src: "Chart_fill" , href:"/dashboard" },
-    { title: "الواجبات", src: "Chat"  , href:"/homework"},
-    { title: "الإعلانات", src: "User",  href:"/annauncements"  },
-    { title: "المحتوى", src: "Calendar" , href:"/Content" },
-    { title: "انضم الى قناة الدسكورد", src: "Search" , href:"/join" },
-    { title: "المستخدمين", src: "Chart" , href:"/users"},
-    { title: "تسجيل الخروج ", src: "Search", gap: true, href:"/logout"},
+    { title: "لوحة القيادة", src: "Chart_fill", href: "/dashboard" },
+    { title: "الواجبات", src: "Chat", href: "/homework" },
+    { title: "الإعلانات", src: "User", href: "/annauncements" },
+    { title: "المحتوى", src: "Calendar", href: "/Content" },
+    { title: "انضم الى قناة الدسكورد", src: "Search", href: "/join" },
+    { title: "المستخدمين", src: "Chart", href: "/users" },
+    { title: "تسجيل الخروج ", src: "Search", gap: true, href: "/logout" },
     // { title: "Setting", src: "Setting" },
   ];
-  
 
   return (
-    <div className="flex h-screen">ls
+    <div className="flex h-screen">
       <div
         className={` ${
           open ? "w-72" : "w-20 "
@@ -41,7 +40,7 @@ const sidebar = () => {
               !open && "scale-0"
             }`}
           >
-           أكاديمية طويق
+            أكاديمية طويق
           </h1>
         </div>
         <ul className="pt-6">
@@ -52,20 +51,19 @@ const sidebar = () => {
               ${Menu.gap ? "mt-9" : "mt-2"} ${
                 index === 0 && "bg-light-white"
               } `}
-              
             >
               <img src={`./src/assets/${Menu.src}.png`} />
-              <a className={`${!open && "hidden"} origin-left duration-200`} href={Menu.href}>
+              <a
+                className={`${!open && "hidden"} origin-left duration-200`}
+                href={Menu.href}
+              >
                 {Menu.title}
               </a>
             </li>
           ))}
         </ul>
       </div>
-      <div className="h-screen flex-1 p-7">
-        <h1 className="text-2xl font-semibold ">Home Page</h1>
-      </div>
     </div>
   );
 };
-export default sidebar;
+export default SideNav;

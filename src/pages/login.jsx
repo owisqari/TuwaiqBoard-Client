@@ -16,9 +16,9 @@ const Login = () => {
           username: username,
           password: password,
         });
-        console.log(res.data.token);
         setCookie("token", res.data.token);
-        navigate("/");
+        localStorage.setItem("isTeacher", true);
+        navigate("/users");
       } catch {
         console.log("error inst");
       }
@@ -28,9 +28,8 @@ const Login = () => {
           username: username,
           password: password,
         });
-        console.log(res.data.token);
         setCookie("token", res.data.token);
-        navigate("/");
+        navigate("/users");
       } catch {
         console.log("error stu");
       }
