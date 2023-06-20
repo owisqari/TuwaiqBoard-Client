@@ -1,123 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Cookies } from "react-cookie";
-import { Flex, Input, Button, Image } from "@chakra-ui/react";
-import ChatCard from "../comp/ChatCard";
-import axios from "axios";
-import Swal from "sweetalert2";
-const Annauncements = () => {
-  const [announcments, setAnnouncments] = useState([]);
-  const [newAnnouncment, setNewAnnouncment] = useState("");
+
+const Users = () => {
   const cookies = new Cookies();
   const token = cookies.get("token");
   if (!token) {
     window.location.href = "/login";
   }
 
-  const isTeacher = Boolean(localStorage.getItem("isTeacher"));
-
-  const getAnnouncments = async () => {
-    try {
-      const res = await axios.get(
-        "http://localhost:8888/instructor/getAnnauncements",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log(res.data.annauncements);
-      setAnnouncments(res.data.annauncements);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const CreateAnnouncment = async () => {
-    try {
-      const res = await axios.post(
-        "http://localhost:8888/instructor/createAnnauncements",
-        {
-          message: newAnnouncment,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      getAnnouncments();
-      console.log(res.data);
-    } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong!",
-      });
-    }
-  };
-  useEffect(() => {
-    if (isTeacher) {
-      getAnnouncments();
-      CreateAnnouncment();
-      return;
-    }
-    getAnnouncments();
-  }, []);
-  return (
-    <Layout>
-      <Flex
-        h={"100%"}
-        direction={"column"}
-        justifyContent="flex-end"
-        alignItems={"center"}
-      >
-        <Image
-          src="https://bootcamp.sa/static/media/tuwaiq-logo-header.38424b35.svg"
-          opacity={0.1}
-          position={"absolute"}
-          h={"100%"}
-          zIndex={-1}
-        />
-        <div style={{ overflowY: "scroll", height: "100vh", width: "100%" }}>
-          {announcments.map((announcment) => (
-            <>
-              <ChatCard
-                key={announcment._id}
-                text={announcment.message}
-                creater={announcment.instructorId.fullName}
-              />
-            </>
-          ))}
-        </div>
-
-        {isTeacher ? (
-          <Flex w="100%" mt="5">
-            <Button
-              bg={"#260B3A"}
-              color="white"
-              h={"3em"}
-              onClick={CreateAnnouncment}
-              _hover={{
-                bg: "white",
-                color: "black",
-                border: "1px solid black",
-              }}
-            >
-              ارسل
-            </Button>
-            <Input
-              h={"3em"}
-              placeholder="اكتب اعلان ..."
-              borderStyle={"solid"}
-              borderColor={"#260B3A"}
-              onChange={(e) => setNewAnnouncment(e.target.value)}
-            />
-          </Flex>
-        ) : (
-          <></>
-        )}
-      </Flex>
-    </Layout>
-  );
+  return <Layout></Layout>;
 };
 
 // eslint-disable-next-line react/prop-types
@@ -160,7 +51,6 @@ const Layout = ({ children }) => {
       gap: true,
       href: "/logout",
     },
-    // { title: "Setting", src: "Setting" },
   ];
 
   return (
@@ -218,4 +108,4 @@ const Layout = ({ children }) => {
     </div>
   );
 };
-export default Annauncements;
+export default Users;

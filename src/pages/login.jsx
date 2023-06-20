@@ -2,12 +2,24 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import Swal from "sweetalert2";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   // eslint-disable-next-line no-unused-vars
   const [cookies, setCookie] = useCookies(["name"]);
   const navigate = useNavigate();
+  const forgetPassword = async () => {
+    Swal.fire({
+      title: "قريباً...",
+      showClass: {
+        popup: "animate__animated animate__fadeInDown",
+      },
+      hideClass: {
+        popup: "animate__animated animate__fadeOutUp",
+      },
+    });
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (username.includes("@tuwaiq.sa")) {
@@ -18,9 +30,29 @@ const Login = () => {
         });
         setCookie("token", res.data.token);
         localStorage.setItem("isTeacher", true);
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "success",
+          title: "Signed in successfully",
+        });
         navigate("/");
       } catch {
-        console.log("error inst");
+        Swal.fire({
+          icon: "error",
+          title: "شكلك نسيت كلمة المرور...",
+          text: "متاكد من اسم المستخدم وكلمة المرور؟",
+        });
       }
     } else {
       try {
@@ -29,9 +61,29 @@ const Login = () => {
           password: password,
         });
         setCookie("token", res.data.token);
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "success",
+          title: "تم تسجيل الدخول بنجاح",
+        });
         navigate("/");
       } catch {
-        console.log("error stu");
+        Swal.fire({
+          icon: "error",
+          title: "شكلك نسيت كلمة المرور...",
+          text: "متاكد من اسم المستخدم وكلمة المرور؟",
+        });
       }
     }
   };
@@ -91,7 +143,7 @@ const Login = () => {
                     <input className="ml-1.5" type="checkbox" id="remaber-me" />
                     <span>تذكرني</span>
                   </label>
-                  <a href="/forget-password">نسيت كلمة المرور؟</a>
+                  <a onClick={forgetPassword}>نسيت كلمة المرور؟</a>
                 </fieldset>
                 <button
                   className="w-full my-4 px-2 py-3  text-white rounded-md"
