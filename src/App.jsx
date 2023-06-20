@@ -3,21 +3,19 @@
 import './App.css'
 // import './index.css'
 import Login from './pages/login'
-import Sidebar from './comp/sidebar'
-import HomeWork from './pages/HomeWork'
-
-
+import { Routes, Route } from 'react-router-dom';
+import HomeWork from "../src/pages/HomeWork"
 function App() {
-
   return (
     <>
-    <Login/>
-    <Sidebar/>
-    <HomeWork/>
+    <Routes>
+      <Route path='/login' element={ <Login/>}/>
+      <Route path='/homework' element={    <HomeWork/>}/>
+
+    </Routes>
+   
     </>
-  )
+  );
 }
 
-
-
-export default App
+export default App;
