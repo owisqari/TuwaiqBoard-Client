@@ -16,8 +16,8 @@ const Login = () => {
           username: username,
           password: password,
         });
-        console.log(res.data.token);
         setCookie("token", res.data.token);
+        localStorage.setItem("isTeacher", true);
         navigate("/");
       } catch {
         console.log("error inst");
@@ -28,7 +28,6 @@ const Login = () => {
           username: username,
           password: password,
         });
-        console.log(res.data.token);
         setCookie("token", res.data.token);
         navigate("/");
       } catch {
@@ -38,7 +37,7 @@ const Login = () => {
   };
 
   return (
-    //login page 
+    //login page
     <>
       <section className="h-full grid grid-cols-6 gap-4">
         <section className="lg:col-span-4 col-span-6 flex flex-col justify-center items-center w-full">
