@@ -27,7 +27,7 @@ const Annauncements = () => {
   const getAnnouncments = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8888/instructor/getAnnauncements",
+        "https://tuwaiqboard.onrender.com/instructor/getAnnauncements",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ const Annauncements = () => {
         return;
       }
       const res = await axios.post(
-        "http://localhost:8888/instructor/createAnnauncements",
+        "https://tuwaiqboard.onrender.com/instructor/createAnnauncements",
         {
           message: newAnnouncment,
         },

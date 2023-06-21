@@ -26,7 +26,7 @@ const CourseMaterial = () => {
   const getMaterial = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8888/instructor/getCourseMaterial",
+        "https://tuwaiqboard.onrender.com/instructor/getCourseMaterial",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -45,7 +45,7 @@ const CourseMaterial = () => {
         return;
       }
       const res = await axios.post(
-        "http://localhost:8888/instructor/CourseMaterial",
+        "https://tuwaiqboard.onrender.com/instructor/CourseMaterial",
         {
           contant: newMaterial,
         },

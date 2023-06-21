@@ -17,7 +17,7 @@ const AllHomeWorks = () => {
   const getHomeWorks = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8888/instructor/getSubmition/${id}`,
+        `https://tuwaiqboard.onrender.com/instructor/getSubmition/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

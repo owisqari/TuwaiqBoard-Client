@@ -24,10 +24,13 @@ const Login = () => {
     e.preventDefault();
     if (username.includes("@tuwaiq.sa")) {
       try {
-        const res = await axios.post("http://localhost:8888/instructor/login", {
-          username: username,
-          password: password,
-        });
+        const res = await axios.post(
+          "https://tuwaiqboard.onrender.com/instructor/login",
+          {
+            username: username,
+            password: password,
+          }
+        );
         setCookie("token", res.data.token);
         localStorage.setItem("isTeacher", true);
         const Toast = Swal.mixin({
@@ -56,10 +59,13 @@ const Login = () => {
       }
     } else {
       try {
-        const res = await axios.post("http://localhost:8888/student/login", {
-          username: username,
-          password: password,
-        });
+        const res = await axios.post(
+          "https://tuwaiqboard.onrender.com/student/login",
+          {
+            username: username,
+            password: password,
+          }
+        );
         setCookie("token", res.data.token);
         const Toast = Swal.mixin({
           toast: true,

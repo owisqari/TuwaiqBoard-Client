@@ -21,7 +21,7 @@ const SubmitHw = () => {
       }
 
       await axios.post(
-        `http://localhost:8888/student/submitHomework/${id}`,
+        `https://tuwaiqboard.onrender.com/student/submitHomework/${id}`,
 
         {
           url: submitHW,

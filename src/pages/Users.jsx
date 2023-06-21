@@ -13,7 +13,9 @@ const Users = () => {
   }
 
   const getUsers = async () => {
-    const res = await axios.get("http://localhost:8888/admin/getAllUsers");
+    const res = await axios.get(
+      "https://tuwaiqboard.onrender.com/admin/getAllUsers"
+    );
     setStudents(res.data.student);
     setInstructors(res.data.instructor);
   };

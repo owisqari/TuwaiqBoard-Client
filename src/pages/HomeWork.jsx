@@ -50,7 +50,7 @@ const HomeWorkPage = () => {
   const getHomeWork = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8888/instructor/getHomework",
+        "https://tuwaiqboard.onrender.com/instructor/getHomework",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -69,7 +69,7 @@ const HomeWorkPage = () => {
         return;
       }
       await axios.post(
-        "http://localhost:8888/instructor/createHomework",
+        "https://tuwaiqboard.onrender.com/instructor/createHomework",
         {
           title: title,
           deadline: date,
