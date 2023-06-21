@@ -1,82 +1,34 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Cookies } from "react-cookie";
 import { Image } from "@chakra-ui/react";
-import axios from "axios";
-const Users = () => {
-  const [students, setStudents] = useState([]);
-  const [instructors, setInstructors] = useState([]);
 
+const DiscordPage = () => {
   const cookies = new Cookies();
   const token = cookies.get("token");
   if (!token) {
     window.location.href = "/login";
   }
 
-  const getUsers = async () => {
-    const res = await axios.get("http://localhost:8888/admin/getAllUsers");
-    setStudents(res.data.student);
-    setInstructors(res.data.instructor);
-  };
-  useEffect(() => {
-    getUsers();
-  }, []);
-
   return (
     <Layout>
-      <ul
-        role="list"
-        className="divide-y divide-gray-100 pt-6 mb-0 h-screen overflow-y-scroll"
-      >
-        <Image
-          src="https://bootcamp.sa/static/media/tuwaiq-logo-header.38424b35.svg"
-          opacity={0.1}
-          position={"absolute"}
-          top={"50%"}
-          left={"40%"}
-          transform={"translate(-50%,-50%)"}
-          widt
-          h={"100%"}
-          zIndex={-1}
-        />
-        {instructors.map((user) => (
-          <li className="flex justify-between gap-x-6 py-5" key={user._id}>
-            <div className="flex gap-x-4">
-              <img
-                className="h-10 w-10 flex-none rounded-ful "
-                src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png"
-                alt="can't find image"
-              />
-              <div className="min-w-0 flex-auto">
-                <p className="text-lg font-semibold leading-6 text-gray-900">
-                  {user.fullName}
-                </p>
-              </div>
-            </div>
-            <div className="hidden sm:flex sm:flex-col sm:items-end">
-              <p className="text-sm leading-6 text-gray-900">Instructor</p>
-            </div>
-          </li>
-        ))}
-        {students.map((user) => (
-          <li className="flex justify-between gap-x-6 py-5" key={user._id}>
-            <div className="flex gap-x-4">
-              <img
-                className="h-10 w-10 flex-none rounded-ful "
-                src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png"
-                alt="can't find image"
-              />
-              <div className="min-w-0 flex-auto">
-                <p className="text-lg font-semibold leading-6 text-gray-900">
-                  {user.fullName}
-                </p>
-                <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                  {user.email}
-                </p>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <Image
+        src="https://bootcamp.sa/static/media/tuwaiq-logo-header.38424b35.svg"
+        opacity={0.1}
+        position={"absolute"}
+        top={"50%"}
+        left={"40%"}
+        transform={"translate(-50%,-50%)"}
+        h={"100%"}
+        zIndex={-1}
+      />
+      <Image
+        src="./src/assets/qrcode_discord.png"
+        h={"50%"}
+        position={"absolute"}
+        top={"50%"}
+        left={"40%"}
+        transform={"translate(-50%,-50%)"}
+      />
     </Layout>
   );
 };
@@ -174,4 +126,4 @@ const Layout = ({ children }) => {
     </div>
   );
 };
-export default Users;
+export default DiscordPage;

@@ -1,7 +1,16 @@
 import { useState, useEffect } from "react";
 import { Cookies } from "react-cookie";
-import { Flex, Input, Button, Image } from "@chakra-ui/react";
-import ChatCard from "../comp/ChatCard";
+import {
+  Flex,
+  Input,
+  Button,
+  Image,
+  Card,
+  CardBody,
+  Text,
+  Heading,
+  Badge,
+} from "@chakra-ui/react";
 import axios from "axios";
 import Swal from "sweetalert2";
 const Annauncements = () => {
@@ -33,6 +42,9 @@ const Annauncements = () => {
   };
   const CreateAnnouncment = async () => {
     try {
+      if (!newAnnouncment) {
+        return;
+      }
       const res = await axios.post(
         "http://localhost:8888/instructor/createAnnauncements",
         {
@@ -61,6 +73,7 @@ const Annauncements = () => {
       return;
     }
     getAnnouncments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <Layout>
@@ -78,15 +91,34 @@ const Annauncements = () => {
           zIndex={-1}
         />
         <div style={{ overflowY: "scroll", height: "100vh", width: "100%" }}>
-          {announcments.map((announcment) => (
-            <>
-              <ChatCard
-                key={announcment._id}
-                text={announcment.message}
-                creater={announcment.instructorId.fullName}
-              />
-            </>
-          ))}
+          {announcments.map((announcment) => {
+            return (
+              <>
+                <Card
+                  key={announcment._id}
+                  mt={"10"}
+                  mb={"10"}
+                  bgColor="#EDF2F7"
+                  shadow={"md"}
+                >
+                  <CardBody>
+                    <Heading size="sm">
+                      {announcment.instructorId.fullName}
+                      <Badge
+                        mr={"2"}
+                        ml="1"
+                        fontSize="0.8em"
+                        colorScheme="green"
+                      >
+                        New
+                      </Badge>
+                    </Heading>
+                    <Text>{announcment.message}</Text>
+                  </CardBody>
+                </Card>
+              </>
+            );
+          })}
         </div>
 
         {isTeacher ? (
@@ -125,14 +157,9 @@ const Layout = ({ children }) => {
   const [open, setOpen] = useState(true);
   const Menus = [
     {
-      title: "لوحة القيادة",
-      src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik01IDIxcS0uODI1IDAtMS40MTMtLjU4OFQzIDE5VjVxMC0uODI1LjU4OC0xLjQxM1Q1IDNoNnYxOEg1Wm04IDB2LTloOHY3cTAgLjgyNS0uNTg4IDEuNDEzVDE5IDIxaC02Wm0wLTExVjNoNnEuODI1IDAgMS40MTMuNTg4VDIxIDV2NWgtOFoiLz48L3N2Zz4=",
-      href: "/",
-    },
-    {
       title: "الواجبات",
       src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0xMCAxNGg0di0yaC00djJabTAtM2g4VjloLTh2MlptMC0zaDhWNmgtOHYyWk04IDE4cS0uODI1IDAtMS40MTMtLjU4OFQ2IDE2VjRxMC0uODI1LjU4OC0xLjQxM1Q4IDJoMTJxLjgyNSAwIDEuNDEzLjU4OFQyMiA0djEycTAgLjgyNS0uNTg4IDEuNDEzVDIwIDE4SDhabS00IDRxLS44MjUgMC0xLjQxMy0uNTg4VDIgMjBWNmgydjE0aDE0djJINFoiLz48L3N2Zz4=",
-      href: "/homework",
+      href: "/",
     },
     {
       title: "الإعلانات",
@@ -142,12 +169,12 @@ const Layout = ({ children }) => {
     {
       title: "المحتوى",
       src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0xNCAyMnYtMi4xMjVsNS4xNS01LjE3NWwyLjE1IDIuMWwtNS4xNzUgNS4ySDE0Wm04LjAyNS01LjlMMTkuOSAxMy45NzVsLjctLjdxLjMtLjMuNzI1LS4zdC43LjNsLjcuNzI1cS4yNzUuMy4yNzUuNzEzdC0uMjc1LjY4N2wtLjcuN1pNNCAyMHEtLjgyNSAwLTEuNDEzLS41ODhUMiAxOFY2cTAtLjgyNS41ODgtMS40MTNUNCA0aDZsMiAyaDhxLjgyNSAwIDEuNDEzLjU4OFQyMiA4djIuOTI1cS0uNzc1IDAtMS41MjUuMTg4dC0xLjMuNzM3bC04LjEgOC4xNUg0WiIvPjwvc3ZnPg==",
-      href: "/Content",
+      href: "/content",
     },
     {
       title: "انضم إلى قناتنا بالدسكورد",
       src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0xOS4yNyA1LjMzQzE3Ljk0IDQuNzEgMTYuNSA0LjI2IDE1IDRhLjA5LjA5IDAgMCAwLS4wNy4wM2MtLjE4LjMzLS4zOS43Ni0uNTMgMS4wOWExNi4wOSAxNi4wOSAwIDAgMC00LjggMGMtLjE0LS4zNC0uMzUtLjc2LS41NC0xLjA5Yy0uMDEtLjAyLS4wNC0uMDMtLjA3LS4wM2MtMS41LjI2LTIuOTMuNzEtNC4yNyAxLjMzYy0uMDEgMC0uMDIuMDEtLjAzLjAyYy0yLjcyIDQuMDctMy40NyA4LjAzLTMuMSAxMS45NWMwIC4wMi4wMS4wNC4wMy4wNWMxLjggMS4zMiAzLjUzIDIuMTIgNS4yNCAyLjY1Yy4wMy4wMS4wNiAwIC4wNy0uMDJjLjQtLjU1Ljc2LTEuMTMgMS4wNy0xLjc0Yy4wMi0uMDQgMC0uMDgtLjA0LS4wOWMtLjU3LS4yMi0xLjExLS40OC0xLjY0LS43OGMtLjA0LS4wMi0uMDQtLjA4LS4wMS0uMTFjLjExLS4wOC4yMi0uMTcuMzMtLjI1Yy4wMi0uMDIuMDUtLjAyLjA3LS4wMWMzLjQ0IDEuNTcgNy4xNSAxLjU3IDEwLjU1IDBjLjAyLS4wMS4wNS0uMDEuMDcuMDFjLjExLjA5LjIyLjE3LjMzLjI2Yy4wNC4wMy4wNC4wOS0uMDEuMTFjLS41Mi4zMS0xLjA3LjU2LTEuNjQuNzhjLS4wNC4wMS0uMDUuMDYtLjA0LjA5Yy4zMi42MS42OCAxLjE5IDEuMDcgMS43NGMuMDMuMDEuMDYuMDIuMDkuMDFjMS43Mi0uNTMgMy40NS0xLjMzIDUuMjUtMi42NWMuMDItLjAxLjAzLS4wMy4wMy0uMDVjLjQ0LTQuNTMtLjczLTguNDYtMy4xLTExLjk1Yy0uMDEtLjAxLS4wMi0uMDItLjA0LS4wMnpNOC41MiAxNC45MWMtMS4wMyAwLTEuODktLjk1LTEuODktMi4xMnMuODQtMi4xMiAxLjg5LTIuMTJjMS4wNiAwIDEuOS45NiAxLjg5IDIuMTJjMCAxLjE3LS44NCAyLjEyLTEuODkgMi4xMnptNi45NyAwYy0xLjAzIDAtMS44OS0uOTUtMS44OS0yLjEycy44NC0yLjEyIDEuODktMi4xMmMxLjA2IDAgMS45Ljk2IDEuODkgMi4xMmMwIDEuMTctLjgzIDIuMTItMS44OSAyLjEyeiIvPjwvc3ZnPg==",
-      href: "https://discord.gg/WwZcwFay",
+      href: "/discord",
     },
     {
       title: "المستخدمين",
