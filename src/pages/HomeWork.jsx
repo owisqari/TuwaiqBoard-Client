@@ -15,13 +15,24 @@ import {
   FormLabel,
   Input,
   Textarea,
+  Image,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
 } from "@chakra-ui/react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-// import app.
-
-const HomeWork = () => {
+const HomeWorkPage = () => {
   const cookies = new Cookies();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const firstField = useRef();
@@ -29,6 +40,7 @@ const HomeWork = () => {
   const [date, setDate] = useState("");
   const [desc, setDesc] = useState("");
   const [homeworks, setHomeWork] = useState([]);
+
   const token = cookies.get("token");
   if (!token) {
     window.location.href = "/login";
@@ -46,7 +58,6 @@ const HomeWork = () => {
         }
       );
       setHomeWork(res.data.homework);
-      console.log(res.data.homework);
     } catch (error) {
       console.log(error);
     }
@@ -54,7 +65,10 @@ const HomeWork = () => {
 
   const CreateHomeWork = async () => {
     try {
-      const res = await axios.post(
+      if (!title || !date || !desc) {
+        return;
+      }
+      await axios.post(
         "http://localhost:8888/instructor/createHomework",
         {
           title: title,
@@ -68,7 +82,6 @@ const HomeWork = () => {
         }
       );
       getHomeWork();
-      console.log(res.data.homework);
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -84,7 +97,9 @@ const HomeWork = () => {
       CreateHomeWork();
       return;
     }
-    getHomeWork;
+    // handleHWSubmit();
+    getHomeWork();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -92,9 +107,27 @@ const HomeWork = () => {
     <Layout>
       {isTeacher ? (
         <>
-          <Button bgColor={"#260B3A"} color={"white"} onClick={onOpen}>
+          <Image
+            src="https://bootcamp.sa/static/media/tuwaiq-logo-header.38424b35.svg"
+            opacity={0.1}
+            position={"absolute"}
+            top={"50%"}
+            left={"40%"}
+            transform={"translate(-50%,-50%)"}
+            h={"100%"}
+            zIndex={-1}
+          />
+
+          <Button
+            bgColor={"#260B3A"}
+            border={"1px solid #EDF2F7"}
+            color={"white"}
+            shadow={"md"}
+            onClick={onOpen}
+          >
             واجب جديد
           </Button>
+
           <Drawer
             isOpen={isOpen}
             placement="right"
@@ -123,7 +156,7 @@ const HomeWork = () => {
                     <Input
                       placeholder="اختار موعد التسليم"
                       size="md"
-                      type="datetime-local"
+                      type="date"
                       onChange={(e) => setDate(e.target.value)}
                     />
                   </Box>
@@ -145,16 +178,139 @@ const HomeWork = () => {
                 <Button
                   bgColor={"#260B3A"}
                   color={"white"}
-                  onClick={CreateHomeWork}
+                  onClick={() => {
+                    CreateHomeWork();
+                    onClose();
+                  }}
                 >
                   ارسال
                 </Button>
               </DrawerFooter>
             </DrawerContent>
           </Drawer>
+          <TableContainer mt={"10"}>
+            <Table variant="striped" bgcolor="#B6B5D8">
+              <Thead>
+                <Tr>
+                  <Th>الواجبات</Th>
+                  <Th>الشرح</Th>
+                  <Th>موعد التسليم</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {homeworks.map((item) => {
+                  return (
+                    <Tr key={item._id}>
+                      <Td>{item.title}</Td>
+                      <Td>
+                        <Accordion allowMultiple>
+                          <AccordionItem border={"none"}>
+                            <h2>
+                              <AccordionButton>
+                                <Box w={"2xl"} as="span" textAlign="right">
+                                  الشرح
+                                </Box>
+                                <AccordionIcon />
+                              </AccordionButton>
+                            </h2>
+                            <AccordionPanel
+                              w={"2xl"}
+                              h={"20"}
+                              overflow={"scroll"}
+                            >
+                              {item.description}
+                            </AccordionPanel>
+                          </AccordionItem>
+                        </Accordion>
+                      </Td>
+                      <Td>{item.deadline.split("T00:00:00.000Z")}</Td>
+                      <Td>
+                        <Button
+                          bgColor="#EDF2F7"
+                          color={"black"}
+                          border={"1px solid #260B3A"}
+                          shadow={"md"}
+                          as={"a"}
+                          href={`/allhomeworks/${item._id}`}
+                        >
+                          الواجبات المسلمة
+                        </Button>
+                      </Td>
+                    </Tr>
+                  );
+                })}
+              </Tbody>
+            </Table>
+          </TableContainer>
         </>
       ) : (
-        <></>
+        <>
+          <Image
+            src="https://bootcamp.sa/static/media/tuwaiq-logo-header.38424b35.svg"
+            opacity={0.1}
+            position={"absolute"}
+            top={"50%"}
+            left={"40%"}
+            transform={"translate(-50%,-50%)"}
+            h={"100%"}
+            zIndex={-1}
+          />
+          <TableContainer mt={"10"}>
+            <Table variant="striped" bgcolor="#B6B5D8">
+              <Thead>
+                <Tr>
+                  <Th>الواجبات</Th>
+                  <Th>الشرح</Th>
+                  <Th>موعد التسليم</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {homeworks.map((item) => {
+                  return (
+                    <Tr key={item._id}>
+                      <Td>{item.title}</Td>
+                      <Td>
+                        <Accordion allowMultiple>
+                          <AccordionItem border={"none"}>
+                            <h2>
+                              <AccordionButton>
+                                <Box w={"2xl"} as="span" textAlign="right">
+                                  الشرح
+                                </Box>
+                                <AccordionIcon />
+                              </AccordionButton>
+                            </h2>
+                            <AccordionPanel
+                              w={"2xl"}
+                              h={"20"}
+                              overflow={"scroll"}
+                            >
+                              {item.description}
+                            </AccordionPanel>
+                          </AccordionItem>
+                        </Accordion>
+                      </Td>
+                      <Td>{item.deadline.split("T00:00:00.000Z")}</Td>
+                      <Td>
+                        <Button
+                          as={"a"}
+                          href={`/hw/${item._id}`}
+                          style={{
+                            backgroundColor: "#260B3A",
+                            color: "white",
+                          }}
+                          onClick={onOpen}
+                        >
+                          تسليم
+                        </Button>
+                      </Td>
+                    </Tr>
+                  );
+                })}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </>
       )}
     </Layout>
   );
@@ -164,14 +320,9 @@ const Layout = ({ children }) => {
   const [open, setOpen] = useState(true);
   const Menus = [
     {
-      title: "لوحة القيادة",
-      src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik01IDIxcS0uODI1IDAtMS40MTMtLjU4OFQzIDE5VjVxMC0uODI1LjU4OC0xLjQxM1Q1IDNoNnYxOEg1Wm04IDB2LTloOHY3cTAgLjgyNS0uNTg4IDEuNDEzVDE5IDIxaC02Wm0wLTExVjNoNnEuODI1IDAgMS40MTMuNTg4VDIxIDV2NWgtOFoiLz48L3N2Zz4=",
-      href: "/",
-    },
-    {
       title: "الواجبات",
       src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0xMCAxNGg0di0yaC00djJabTAtM2g4VjloLTh2MlptMC0zaDhWNmgtOHYyWk04IDE4cS0uODI1IDAtMS40MTMtLjU4OFQ2IDE2VjRxMC0uODI1LjU4OC0xLjQxM1Q4IDJoMTJxLjgyNSAwIDEuNDEzLjU4OFQyMiA0djEycTAgLjgyNS0uNTg4IDEuNDEzVDIwIDE4SDhabS00IDRxLS44MjUgMC0xLjQxMy0uNTg4VDIgMjBWNmgydjE0aDE0djJINFoiLz48L3N2Zz4=",
-      href: "/homework",
+      href: "/",
     },
     {
       title: "الإعلانات",
@@ -181,12 +332,12 @@ const Layout = ({ children }) => {
     {
       title: "المحتوى",
       src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0xNCAyMnYtMi4xMjVsNS4xNS01LjE3NWwyLjE1IDIuMWwtNS4xNzUgNS4ySDE0Wm04LjAyNS01LjlMMTkuOSAxMy45NzVsLjctLjdxLjMtLjMuNzI1LS4zdC43LjNsLjcuNzI1cS4yNzUuMy4yNzUuNzEzdC0uMjc1LjY4N2wtLjcuN1pNNCAyMHEtLjgyNSAwLTEuNDEzLS41ODhUMiAxOFY2cTAtLjgyNS41ODgtMS40MTNUNCA0aDZsMiAyaDhxLjgyNSAwIDEuNDEzLjU4OFQyMiA4djIuOTI1cS0uNzc1IDAtMS41MjUuMTg4dC0xLjMuNzM3bC04LjEgOC4xNUg0WiIvPjwvc3ZnPg==",
-      href: "/Content",
+      href: "/content",
     },
     {
       title: "انضم إلى قناتنا بالدسكورد",
       src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0xOS4yNyA1LjMzQzE3Ljk0IDQuNzEgMTYuNSA0LjI2IDE1IDRhLjA5LjA5IDAgMCAwLS4wNy4wM2MtLjE4LjMzLS4zOS43Ni0uNTMgMS4wOWExNi4wOSAxNi4wOSAwIDAgMC00LjggMGMtLjE0LS4zNC0uMzUtLjc2LS41NC0xLjA5Yy0uMDEtLjAyLS4wNC0uMDMtLjA3LS4wM2MtMS41LjI2LTIuOTMuNzEtNC4yNyAxLjMzYy0uMDEgMC0uMDIuMDEtLjAzLjAyYy0yLjcyIDQuMDctMy40NyA4LjAzLTMuMSAxMS45NWMwIC4wMi4wMS4wNC4wMy4wNWMxLjggMS4zMiAzLjUzIDIuMTIgNS4yNCAyLjY1Yy4wMy4wMS4wNiAwIC4wNy0uMDJjLjQtLjU1Ljc2LTEuMTMgMS4wNy0xLjc0Yy4wMi0uMDQgMC0uMDgtLjA0LS4wOWMtLjU3LS4yMi0xLjExLS40OC0xLjY0LS43OGMtLjA0LS4wMi0uMDQtLjA4LS4wMS0uMTFjLjExLS4wOC4yMi0uMTcuMzMtLjI1Yy4wMi0uMDIuMDUtLjAyLjA3LS4wMWMzLjQ0IDEuNTcgNy4xNSAxLjU3IDEwLjU1IDBjLjAyLS4wMS4wNS0uMDEuMDcuMDFjLjExLjA5LjIyLjE3LjMzLjI2Yy4wNC4wMy4wNC4wOS0uMDEuMTFjLS41Mi4zMS0xLjA3LjU2LTEuNjQuNzhjLS4wNC4wMS0uMDUuMDYtLjA0LjA5Yy4zMi42MS42OCAxLjE5IDEuMDcgMS43NGMuMDMuMDEuMDYuMDIuMDkuMDFjMS43Mi0uNTMgMy40NS0xLjMzIDUuMjUtMi42NWMuMDItLjAxLjAzLS4wMy4wMy0uMDVjLjQ0LTQuNTMtLjczLTguNDYtMy4xLTExLjk1Yy0uMDEtLjAxLS4wMi0uMDItLjA0LS4wMnpNOC41MiAxNC45MWMtMS4wMyAwLTEuODktLjk1LTEuODktMi4xMnMuODQtMi4xMiAxLjg5LTIuMTJjMS4wNiAwIDEuOS45NiAxLjg5IDIuMTJjMCAxLjE3LS44NCAyLjEyLTEuODkgMi4xMnptNi45NyAwYy0xLjAzIDAtMS44OS0uOTUtMS44OS0yLjEycy44NC0yLjEyIDEuODktMi4xMmMxLjA2IDAgMS45Ljk2IDEuODkgMi4xMmMwIDEuMTctLjgzIDIuMTItMS44OSAyLjEyeiIvPjwvc3ZnPg==",
-      href: "https://discord.gg/WwZcwFay",
+      href: "/discord",
     },
     {
       title: "المستخدمين",
@@ -199,6 +350,7 @@ const Layout = ({ children }) => {
       gap: true,
       href: "/logout",
     },
+
     // { title: "Setting", src: "Setting" },
   ];
 
@@ -237,7 +389,7 @@ const Layout = ({ children }) => {
           {Menus.map((Menu, index) => (
             <li
               key={index}
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4  
+              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-lg items-center gap-x-4  
               ${Menu.gap ? "mt-96" : "mt-2"} ${
                 index === 0 && "bg-light-white"
               } `}
@@ -257,4 +409,4 @@ const Layout = ({ children }) => {
     </div>
   );
 };
-export default HomeWork;
+export default HomeWorkPage;

@@ -1,86 +1,96 @@
 import { useState, useEffect } from "react";
-import { Cookies } from "react-cookie";
-import { Image } from "@chakra-ui/react";
 import axios from "axios";
-const Users = () => {
-  const [students, setStudents] = useState([]);
-  const [instructors, setInstructors] = useState([]);
-
+import { Cookies } from "react-cookie";
+import { useParams } from "react-router-dom";
+import { Image, CardBody, Card, Heading, Flex, Button } from "@chakra-ui/react";
+const AllHomeWorks = () => {
   const cookies = new Cookies();
   const token = cookies.get("token");
-  if (!token) {
+  const isTeacher = Boolean(localStorage.getItem("isTeacher"));
+  if (!token || !isTeacher) {
     window.location.href = "/login";
   }
+  const { id } = useParams();
 
-  const getUsers = async () => {
-    const res = await axios.get("http://localhost:8888/admin/getAllUsers");
-    setStudents(res.data.student);
-    setInstructors(res.data.instructor);
+  const [homeworks, setHomeworks] = useState([]);
+
+  const getHomeWorks = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8888/instructor/getSubmition/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res.data.submition);
+      setHomeworks(res.data.submition);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   useEffect(() => {
-    getUsers();
+    getHomeWorks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <Layout>
-      <ul
-        role="list"
-        className="divide-y divide-gray-100 pt-6 mb-0 h-screen overflow-y-scroll"
-      >
-        <Image
-          src="https://bootcamp.sa/static/media/tuwaiq-logo-header.38424b35.svg"
-          opacity={0.1}
-          position={"absolute"}
-          top={"50%"}
-          left={"40%"}
-          transform={"translate(-50%,-50%)"}
-          widt
+    <>
+      <Layout>
+        <Flex
           h={"100%"}
-          zIndex={-1}
-        />
-        {instructors.map((user) => (
-          <li className="flex justify-between gap-x-6 py-5" key={user._id}>
-            <div className="flex gap-x-4">
-              <img
-                className="h-10 w-10 flex-none rounded-ful "
-                src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png"
-                alt="can't find image"
-              />
-              <div className="min-w-0 flex-auto">
-                <p className="text-lg font-semibold leading-6 text-gray-900">
-                  {user.fullName}
-                </p>
-              </div>
-            </div>
-            <div className="hidden sm:flex sm:flex-col sm:items-end">
-              <p className="text-sm leading-6 text-gray-900">Instructor</p>
-            </div>
-          </li>
-        ))}
-        {students.map((user) => (
-          <li className="flex justify-between gap-x-6 py-5" key={user._id}>
-            <div className="flex gap-x-4">
-              <img
-                className="h-10 w-10 flex-none rounded-ful "
-                src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png"
-                alt="can't find image"
-              />
-              <div className="min-w-0 flex-auto">
-                <p className="text-lg font-semibold leading-6 text-gray-900">
-                  {user.fullName}
-                </p>
-                <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                  {user.email}
-                </p>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </Layout>
+          direction={"row"}
+          justifyContent="flex-end"
+          alignItems={"center"}
+        >
+          <Image
+            src="https://bootcamp.sa/static/media/tuwaiq-logo-header.38424b35.svg"
+            opacity={0.1}
+            position={"absolute"}
+            h={"100%"}
+            zIndex={-1}
+          />
+          <div style={{ overflowY: "scroll", height: "100vh", width: "100%" }}>
+            {homeworks.map((item) => {
+              return (
+                <>
+                  <Card
+                    key={item._id}
+                    mt={"10"}
+                    mb={"10"}
+                    bgColor="#EDF2F7"
+                    shadow={"md"}
+                  >
+                    <CardBody>
+                      <Flex
+                        justifyContent="space-between"
+                        alignItems={"center"}
+                      >
+                        <Heading size="lg">{item.studentId.fullName}</Heading>
+                        <Button
+                          as={"a"}
+                          href={item.url}
+                          style={{
+                            backgroundColor: "#260B3A",
+                            color: "white",
+                          }}
+                        >
+                          الرابط
+                        </Button>
+                      </Flex>
+                    </CardBody>
+                  </Card>
+                </>
+              );
+            })}
+          </div>
+        </Flex>
+      </Layout>
+    </>
   );
 };
-
 // eslint-disable-next-line react/prop-types
 const Layout = ({ children }) => {
   const [open, setOpen] = useState(true);
@@ -116,7 +126,6 @@ const Layout = ({ children }) => {
       gap: true,
       href: "/logout",
     },
-    // { title: "Setting", src: "Setting" },
   ];
 
   return (
@@ -127,9 +136,9 @@ const Layout = ({ children }) => {
         } bg-[#260B3A] h-screen p-5  pt-8 relative duration-300`}
       >
         <img
-          src="./src/assets/control.png"
+          src="../assets/control.png"
           className={`absolute cursor-pointer -left-3 top-9 w-7 border-dark-purple 
-           border-2 rounded-full  ${!open && "rotate-180"}`}
+             border-2 rounded-full  ${!open && "rotate-180"}`}
           onClick={() => setOpen(!open)}
         />
         <div className="flex gap-x-4 items-center">
@@ -155,7 +164,7 @@ const Layout = ({ children }) => {
             <li
               key={index}
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-lg items-center gap-x-4  
-              ${Menu.gap ? "mt-96" : "mt-2"} ${
+                ${Menu.gap ? "mt-96" : "mt-2"} ${
                 index === 0 && "bg-light-white"
               } `}
             >
@@ -174,4 +183,4 @@ const Layout = ({ children }) => {
     </div>
   );
 };
-export default Users;
+export default AllHomeWorks;

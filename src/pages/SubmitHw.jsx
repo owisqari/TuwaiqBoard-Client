@@ -1,86 +1,84 @@
 import { useState, useEffect } from "react";
-import { Cookies } from "react-cookie";
-import { Image } from "@chakra-ui/react";
 import axios from "axios";
-const Users = () => {
-  const [students, setStudents] = useState([]);
-  const [instructors, setInstructors] = useState([]);
+import { Cookies } from "react-cookie";
+import { useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { Text, Input, Button, Flex } from "@chakra-ui/react";
 
+const SubmitHw = () => {
   const cookies = new Cookies();
+  let { id } = useParams();
+  const navigate = useNavigate();
   const token = cookies.get("token");
   if (!token) {
     window.location.href = "/login";
   }
+  const [submitHW, setSubmitHW] = useState("");
+  const handleHWSubmit = async () => {
+    try {
+      if (!submitHW) {
+        return;
+      }
 
-  const getUsers = async () => {
-    const res = await axios.get("http://localhost:8888/admin/getAllUsers");
-    setStudents(res.data.student);
-    setInstructors(res.data.instructor);
+      await axios.post(
+        `http://localhost:8888/student/submitHomework/${id}`,
+
+        {
+          url: submitHW,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Your work has been submitted",
+        showConfirmButton: false,
+        timer: 2500,
+      });
+      navigate("/");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
+    }
   };
   useEffect(() => {
-    getUsers();
+    handleHWSubmit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   return (
     <Layout>
-      <ul
-        role="list"
-        className="divide-y divide-gray-100 pt-6 mb-0 h-screen overflow-y-scroll"
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        direction={"column"}
       >
-        <Image
-          src="https://bootcamp.sa/static/media/tuwaiq-logo-header.38424b35.svg"
-          opacity={0.1}
-          position={"absolute"}
-          top={"50%"}
-          left={"40%"}
-          transform={"translate(-50%,-50%)"}
-          widt
-          h={"100%"}
-          zIndex={-1}
+        <Text mb="8px" fontSize={"2xl"}>
+          الرابط:
+        </Text>
+        <Input
+          onChange={(e) => setSubmitHW(e.target.value)}
+          placeholder="ادخل الرابط هنا"
+          size="lg"
         />
-        {instructors.map((user) => (
-          <li className="flex justify-between gap-x-6 py-5" key={user._id}>
-            <div className="flex gap-x-4">
-              <img
-                className="h-10 w-10 flex-none rounded-ful "
-                src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png"
-                alt="can't find image"
-              />
-              <div className="min-w-0 flex-auto">
-                <p className="text-lg font-semibold leading-6 text-gray-900">
-                  {user.fullName}
-                </p>
-              </div>
-            </div>
-            <div className="hidden sm:flex sm:flex-col sm:items-end">
-              <p className="text-sm leading-6 text-gray-900">Instructor</p>
-            </div>
-          </li>
-        ))}
-        {students.map((user) => (
-          <li className="flex justify-between gap-x-6 py-5" key={user._id}>
-            <div className="flex gap-x-4">
-              <img
-                className="h-10 w-10 flex-none rounded-ful "
-                src="https://cdn-icons-png.flaticon.com/512/3106/3106773.png"
-                alt="can't find image"
-              />
-              <div className="min-w-0 flex-auto">
-                <p className="text-lg font-semibold leading-6 text-gray-900">
-                  {user.fullName}
-                </p>
-                <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                  {user.email}
-                </p>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+        <Button
+          bgColor={"#260B3A"}
+          color={"white"}
+          size="lg"
+          mt={"14"}
+          onClick={handleHWSubmit}
+        >
+          ارسال
+        </Button>
+      </Flex>
     </Layout>
   );
 };
-
 // eslint-disable-next-line react/prop-types
 const Layout = ({ children }) => {
   const [open, setOpen] = useState(true);
@@ -129,7 +127,7 @@ const Layout = ({ children }) => {
         <img
           src="./src/assets/control.png"
           className={`absolute cursor-pointer -left-3 top-9 w-7 border-dark-purple 
-           border-2 rounded-full  ${!open && "rotate-180"}`}
+             border-2 rounded-full  ${!open && "rotate-180"}`}
           onClick={() => setOpen(!open)}
         />
         <div className="flex gap-x-4 items-center">
@@ -155,7 +153,7 @@ const Layout = ({ children }) => {
             <li
               key={index}
               className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-lg items-center gap-x-4  
-              ${Menu.gap ? "mt-96" : "mt-2"} ${
+                ${Menu.gap ? "mt-96" : "mt-2"} ${
                 index === 0 && "bg-light-white"
               } `}
             >
@@ -174,4 +172,4 @@ const Layout = ({ children }) => {
     </div>
   );
 };
-export default Users;
+export default SubmitHw;

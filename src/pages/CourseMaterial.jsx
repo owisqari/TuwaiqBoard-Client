@@ -1,14 +1,142 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Cookies } from "react-cookie";
-
-const Users = () => {
+import {
+  Flex,
+  Input,
+  Button,
+  Image,
+  Card,
+  CardBody,
+  Text,
+  Heading,
+} from "@chakra-ui/react";
+import axios from "axios";
+import Swal from "sweetalert2";
+const CourseMaterial = () => {
+  const [material, setMaterial] = useState([]);
+  const [newMaterial, setNewMaterial] = useState("");
   const cookies = new Cookies();
   const token = cookies.get("token");
   if (!token) {
     window.location.href = "/login";
   }
 
-  return <Layout></Layout>;
+  const isTeacher = Boolean(localStorage.getItem("isTeacher"));
+
+  const getMaterial = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:8888/instructor/getCourseMaterial",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setMaterial(res.data.courseMaterial);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const CreateMaterial = async () => {
+    try {
+      if (!newMaterial) {
+        return;
+      }
+      const res = await axios.post(
+        "http://localhost:8888/instructor/CourseMaterial",
+        {
+          contant: newMaterial,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      getMaterial();
+      console.log(res.data);
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
+    }
+  };
+  useEffect(() => {
+    if (isTeacher) {
+      getMaterial();
+      CreateMaterial();
+      return;
+    }
+    getMaterial();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return (
+    <Layout>
+      <Flex
+        h={"100%"}
+        direction={"column"}
+        justifyContent="flex-end"
+        alignItems={"center"}
+      >
+        <Image
+          src="https://bootcamp.sa/static/media/tuwaiq-logo-header.38424b35.svg"
+          opacity={0.1}
+          position={"absolute"}
+          h={"100%"}
+          zIndex={-1}
+        />
+        <div style={{ overflowY: "scroll", height: "100vh", width: "100%" }}>
+          {material.map((material) => (
+            <>
+              <Card
+                key={material._id}
+                mt={"10"}
+                mb={"10"}
+                bgColor="#EDF2F7"
+                shadow={"md"}
+              >
+                <CardBody>
+                  <Heading size="sm">{material.instructorId.fullName}</Heading>
+                  <Text>{material.contant}</Text>
+                </CardBody>
+              </Card>
+            </>
+          ))}
+        </div>
+
+        {isTeacher ? (
+          <Flex w="100%" mt="5">
+            <Button
+              bg={"#260B3A"}
+              color="white"
+              h={"3em"}
+              onClick={CreateMaterial}
+              _hover={{
+                bg: "white",
+                color: "black",
+                border: "1px solid black",
+              }}
+            >
+              ارسل
+            </Button>
+            <Input
+              h={"3em"}
+              placeholder="اكتب اعلان ..."
+              borderStyle={"solid"}
+              borderColor={"#260B3A"}
+              onChange={(e) => setNewMaterial(e.target.value)}
+            />
+          </Flex>
+        ) : (
+          <></>
+        )}
+      </Flex>
+    </Layout>
+  );
 };
 
 // eslint-disable-next-line react/prop-types
@@ -16,14 +144,9 @@ const Layout = ({ children }) => {
   const [open, setOpen] = useState(true);
   const Menus = [
     {
-      title: "لوحة القيادة",
-      src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik01IDIxcS0uODI1IDAtMS40MTMtLjU4OFQzIDE5VjVxMC0uODI1LjU4OC0xLjQxM1Q1IDNoNnYxOEg1Wm04IDB2LTloOHY3cTAgLjgyNS0uNTg4IDEuNDEzVDE5IDIxaC02Wm0wLTExVjNoNnEuODI1IDAgMS40MTMuNTg4VDIxIDV2NWgtOFoiLz48L3N2Zz4=",
-      href: "/",
-    },
-    {
       title: "الواجبات",
       src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0xMCAxNGg0di0yaC00djJabTAtM2g4VjloLTh2MlptMC0zaDhWNmgtOHYyWk04IDE4cS0uODI1IDAtMS40MTMtLjU4OFQ2IDE2VjRxMC0uODI1LjU4OC0xLjQxM1Q4IDJoMTJxLjgyNSAwIDEuNDEzLjU4OFQyMiA0djEycTAgLjgyNS0uNTg4IDEuNDEzVDIwIDE4SDhabS00IDRxLS44MjUgMC0xLjQxMy0uNTg4VDIgMjBWNmgydjE0aDE0djJINFoiLz48L3N2Zz4=",
-      href: "/homework",
+      href: "/",
     },
     {
       title: "الإعلانات",
@@ -33,12 +156,12 @@ const Layout = ({ children }) => {
     {
       title: "المحتوى",
       src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0xNCAyMnYtMi4xMjVsNS4xNS01LjE3NWwyLjE1IDIuMWwtNS4xNzUgNS4ySDE0Wm04LjAyNS01LjlMMTkuOSAxMy45NzVsLjctLjdxLjMtLjMuNzI1LS4zdC43LjNsLjcuNzI1cS4yNzUuMy4yNzUuNzEzdC0uMjc1LjY4N2wtLjcuN1pNNCAyMHEtLjgyNSAwLTEuNDEzLS41ODhUMiAxOFY2cTAtLjgyNS41ODgtMS40MTNUNCA0aDZsMiAyaDhxLjgyNSAwIDEuNDEzLjU4OFQyMiA4djIuOTI1cS0uNzc1IDAtMS41MjUuMTg4dC0xLjMuNzM3bC04LjEgOC4xNUg0WiIvPjwvc3ZnPg==",
-      href: "/Content",
+      href: "/content",
     },
     {
       title: "انضم إلى قناتنا بالدسكورد",
       src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0xOS4yNyA1LjMzQzE3Ljk0IDQuNzEgMTYuNSA0LjI2IDE1IDRhLjA5LjA5IDAgMCAwLS4wNy4wM2MtLjE4LjMzLS4zOS43Ni0uNTMgMS4wOWExNi4wOSAxNi4wOSAwIDAgMC00LjggMGMtLjE0LS4zNC0uMzUtLjc2LS41NC0xLjA5Yy0uMDEtLjAyLS4wNC0uMDMtLjA3LS4wM2MtMS41LjI2LTIuOTMuNzEtNC4yNyAxLjMzYy0uMDEgMC0uMDIuMDEtLjAzLjAyYy0yLjcyIDQuMDctMy40NyA4LjAzLTMuMSAxMS45NWMwIC4wMi4wMS4wNC4wMy4wNWMxLjggMS4zMiAzLjUzIDIuMTIgNS4yNCAyLjY1Yy4wMy4wMS4wNiAwIC4wNy0uMDJjLjQtLjU1Ljc2LTEuMTMgMS4wNy0xLjc0Yy4wMi0uMDQgMC0uMDgtLjA0LS4wOWMtLjU3LS4yMi0xLjExLS40OC0xLjY0LS43OGMtLjA0LS4wMi0uMDQtLjA4LS4wMS0uMTFjLjExLS4wOC4yMi0uMTcuMzMtLjI1Yy4wMi0uMDIuMDUtLjAyLjA3LS4wMWMzLjQ0IDEuNTcgNy4xNSAxLjU3IDEwLjU1IDBjLjAyLS4wMS4wNS0uMDEuMDcuMDFjLjExLjA5LjIyLjE3LjMzLjI2Yy4wNC4wMy4wNC4wOS0uMDEuMTFjLS41Mi4zMS0xLjA3LjU2LTEuNjQuNzhjLS4wNC4wMS0uMDUuMDYtLjA0LjA5Yy4zMi42MS42OCAxLjE5IDEuMDcgMS43NGMuMDMuMDEuMDYuMDIuMDkuMDFjMS43Mi0uNTMgMy40NS0xLjMzIDUuMjUtMi42NWMuMDItLjAxLjAzLS4wMy4wMy0uMDVjLjQ0LTQuNTMtLjczLTguNDYtMy4xLTExLjk1Yy0uMDEtLjAxLS4wMi0uMDItLjA0LS4wMnpNOC41MiAxNC45MWMtMS4wMyAwLTEuODktLjk1LTEuODktMi4xMnMuODQtMi4xMiAxLjg5LTIuMTJjMS4wNiAwIDEuOS45NiAxLjg5IDIuMTJjMCAxLjE3LS44NCAyLjEyLTEuODkgMi4xMnptNi45NyAwYy0xLjAzIDAtMS44OS0uOTUtMS44OS0yLjEycy44NC0yLjEyIDEuODktMi4xMmMxLjA2IDAgMS45Ljk2IDEuODkgMi4xMmMwIDEuMTctLjgzIDIuMTItMS44OSAyLjEyeiIvPjwvc3ZnPg==",
-      href: "https://discord.gg/WwZcwFay",
+      href: "/discord",
     },
     {
       title: "المستخدمين",
@@ -51,6 +174,7 @@ const Layout = ({ children }) => {
       gap: true,
       href: "/logout",
     },
+    // { title: "Setting", src: "Setting" },
   ];
 
   return (
@@ -108,4 +232,4 @@ const Layout = ({ children }) => {
     </div>
   );
 };
-export default Users;
+export default CourseMaterial;

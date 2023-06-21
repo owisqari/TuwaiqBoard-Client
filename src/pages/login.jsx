@@ -44,7 +44,7 @@ const Login = () => {
 
         Toast.fire({
           icon: "success",
-          title: "Signed in successfully",
+          title: "تم تسجيل الدخول بنجاح",
         });
         navigate("/");
       } catch {
@@ -139,10 +139,6 @@ const Login = () => {
                   />
                 </fieldset>
                 <fieldset className="flex justify-between">
-                  <label className="font-bold" htmlFor="remaber-me">
-                    <input className="ml-1.5" type="checkbox" id="remaber-me" />
-                    <span>تذكرني</span>
-                  </label>
                   <a onClick={forgetPassword}>نسيت كلمة المرور؟</a>
                 </fieldset>
                 <button
