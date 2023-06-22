@@ -136,7 +136,7 @@ const HomeWorkPage = () => {
           >
             <DrawerOverlay />
             <DrawerContent>
-              <DrawerCloseButton />
+              <DrawerCloseButton top={"0"} left={"0"} />
               <DrawerHeader borderBottomWidth="1px">واجب جديد</DrawerHeader>
 
               <DrawerBody>

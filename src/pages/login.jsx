@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import { Image } from "@chakra-ui/react";
 import Swal from "sweetalert2";
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -92,7 +93,7 @@ const Login = () => {
     //login page
     <>
       <section className="h-full grid grid-cols-6 gap-4">
-        <section className="lg:col-span-4 col-span-6 flex flex-col justify-center items-center w-full">
+        <section className="col-span-6 mt-32 flex flex-col justify-center items-center w-full">
           <div className="flex flex-col justify-center my-4 items-center">
             <div className="text-center">
               <img
@@ -102,6 +103,13 @@ const Login = () => {
             </div>
           </div>
           <div className="flex justify-center  my-4 items-center  w-full">
+            <Image
+              src="https://bootcamp.sa/static/media/tuwaiq-logo-header.38424b35.svg"
+              opacity={0.1}
+              position={"absolute"}
+              h={"100%"}
+              zIndex={-1}
+            />
             <div className="w-full flex flex-col p-3 rounded-md bg-white max-w-sm shadow-md">
               <h1 className="w-full my-4 p-2 text-center font-bold text-xl">
                 تسجيل الدخول
@@ -152,12 +160,6 @@ const Login = () => {
               </div>
             </div>
           </div>
-        </section>
-        <section className="col-span-2">
-          <img
-            className="h-screen w-full"
-            src="https://c.top4top.io/p_2725gygyo1.png"
-          />
         </section>
       </section>
     </>

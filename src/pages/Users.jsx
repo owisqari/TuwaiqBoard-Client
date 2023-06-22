@@ -34,7 +34,6 @@ const Users = () => {
           top={"50%"}
           left={"40%"}
           transform={"translate(-50%,-50%)"}
-          widt
           h={"100%"}
           zIndex={-1}
         />

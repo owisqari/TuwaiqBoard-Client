@@ -34,7 +34,7 @@ const SubmitHw = () => {
       );
       Swal.fire({
         icon: "success",
-        title: "Your work has been submitted",
+        title: "تم ارسال الواجب بنجاح",
         showConfirmButton: false,
         timer: 2500,
       });
