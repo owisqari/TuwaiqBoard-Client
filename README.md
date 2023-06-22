@@ -7,6 +7,10 @@ Features
     Instructors can create annauncements to share with students.
     TuwaiqBoard allows students and instructors to communicate with each other directly through the platform.
 
+### live demo: https://tuwaiqboard.netlify.app
+    test username: owis 
+    test password: owis1
+
 ## Tech Stack
 
     MongoDB: A NoSQL database that is used to store student and instructor data.
