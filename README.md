@@ -8,8 +8,8 @@ Features
     TuwaiqBoard allows students and instructors to communicate with each other directly through the platform.
 
 ### live demo: https://tuwaiqboard.netlify.app
-    test username: owis 
-    test password: owis1
+    test username: ali@tuwaiq.sa 
+    test password: ali1
 
 ## Tech Stack
 
