@@ -33,5 +33,5 @@ To get started with TuwaiqBoard, you will need to:
 ## TuwaiqBoard is licensed under the MIT License.
 Credits
 
-TuwaiqBoard was created by [owis bukhari, arwaa alharbi].
+TuwaiqBoard was created by owis bukhari.
 Thank you for using TuwaiqBoard!
